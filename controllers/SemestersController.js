@@ -7,7 +7,10 @@ const SemestersController = {
     getSemesterById: async id => {
         return await Semester.findById(id)
             .populate("subjects");
-    }
+    },
 };
+
+
+
 
 export default SemestersController;

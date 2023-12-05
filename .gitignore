@@ -131,4 +131,9 @@ dist
 .pnp.*
 yarn.lock
 
+# codesandbox
+.codesandbox/*
+.devcontainer/*
+sandbox.config.json
+
 todotasks.md

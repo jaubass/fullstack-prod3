@@ -8,10 +8,6 @@ const semesterSchema = new mongoose.Schema({
         trim: true,
         unique: true
     },
-    color: {
-        type: String,
-        required: true
-    },
     year: {
         type: Number,
         required: true
@@ -27,6 +23,10 @@ const semesterSchema = new mongoose.Schema({
     descrip: {
         type: String,
         trim: true
+    },
+    color: {
+        type: String,
+        required: true
     },
     kind: {
         type: Number,
