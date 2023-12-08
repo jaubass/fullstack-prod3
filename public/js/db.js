@@ -122,7 +122,7 @@ async function createSemesterDB(sem) {
                 end: "${sem.end}",
                 descrip: "${sem.descrip}",
                 color: "${sem.color}",
-                kind: ${sem.type},
+                kind: ${sem.kind},
                 tutorized: ${sem.tutorized}
             ) {
                 id
