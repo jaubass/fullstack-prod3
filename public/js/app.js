@@ -12,7 +12,7 @@ const SUSPENDIDA = 3;
 ////////////////////////////////////////////////////////////////////////////////
 // Variables
 // Variables globales que serán necesarias en la app
-// Ninguna, por ahora
+let socket, timeOutId;
 
 
 
@@ -35,10 +35,20 @@ function messageFlash(msg, kind = "success") {
     flashMsg.innerHTML = msg;
     flash.classList.remove('d-none');
     flash.classList.add(`alert-${kind}`);
-    setTimeout(() => {
+
+    // Limpiar el timeout anterior, si lo había
+    clearTimeout(timeOutId);
+
+    // Crear un timeOut para ocultar el mensaje después de 3 segundos
+    timeOutId = setTimeout(() => {
         flash.classList.add('d-none');
         flash.classList.remove(`alert-${kind}`);
     }, 3000);
+}
+function broadcast(msg) {
+    socket.emit('dimelotodo', {
+        status: "ok", text:`<strong>${socket.id}</strong>:<br>${msg}`
+    });
 }
 
 
@@ -59,6 +69,8 @@ async function deleteSem(id) {
         thingName.dataset.id = id;
         confirmDelete.show();
     }
+
+    broadcast("está a punto de borrar un semestre 😱!");
 }
 
 /**
@@ -76,6 +88,8 @@ async function deleteSubject(id) {
         thingName.dataset.id = id;
         confirmDelete.show();
     }
+
+    broadcast("está a punto de borrar una asignatura 😱!");
 }
 
 /**
@@ -91,11 +105,15 @@ async function deleteConfirmed() {
         await deleteSemesterDB(id);
         refreshSemesters();
 
+        broadcast("ha borrado un semestre 😱!");
+
     } else if (what === "subject") {
         await deleteSubjectDB(id);
         const semId = semesterPage.dataset.id;
         const sem = await getSemesterByIdDB(semId);
         refreshSubjects(sem);
+
+        broadcast("ha borrado una asignatura 😱!");
     }
 }
 
@@ -209,9 +227,13 @@ async function handleSemForm(ev, form) {
     if (sem.id) {
         await updateSemesterDB(sem);
 
+        broadcast("ha editado un semestre");
+
     } else {
         console.log('Creating semester', sem);
         await createSemesterDB(sem);
+
+        broadcast("ha creado un semestre");
     }
 
     refreshSemesters();
@@ -254,9 +276,13 @@ async function handleSubjectForm(ev, form) {
     if (subj.id) {
         // Si hay id, se está editando una asignatura
         await updateSubjectDB(subj);
+
+        broadcast("ha editado una asignatura");
     } else {
         // Si no hay id, se está creando una asignatura nueva
         await createSubjectDB(subj);
+
+        broadcast("ha creado una asignatura");
     }
 
     const sem = await getSemesterByIdDB(subj.semId);
@@ -314,7 +340,7 @@ async function dragdrop(ev) {
     this.classList.remove('dragover');
     const subjId = ev.dataTransfer.getData('text/plain');
     const card = document.getElementById(subjId);
-    const subjectId = card.dataset.id;
+    const id = card.dataset.id;
     const status = column.dataset.status;
 
     await updateSubjectStatusDB(String(id), Number(status));
@@ -322,6 +348,8 @@ async function dragdrop(ev) {
     // usa querySelector para seleccionar ese div y luego appendChild para
     // añadir la tarjeta a ese div.
     column.querySelector("div").appendChild(card);
+
+    broadcast("ha movido una asignatura de columna");
 }
 
 /**
@@ -356,7 +384,16 @@ function applyListeners() {
     });
 }
 
+function initializeSocket() {
+    // https://socket.io/docs/v4/tutorial/introduction
+    socket = io();
 
+    // Al recibir mensajes, mostrarlos
+    socket.on('dimelotodo', (msg) => {
+        console.log("Recibido:", msg);
+        messageFlash(msg.text, "info");
+    });
+}
 
 
 
@@ -409,6 +446,8 @@ async function openSem(id) {
     semesterPage.dataset.id = id;
     refreshSubjects(sem);
     showMe(semHeader, semesterPage);
+
+    broadcast("ha abierto el semestre " + sem.name);
 }
 
 
@@ -443,6 +482,8 @@ async function openSemForm(id = null) {
         semFormFields.tutorized.checked = true;
     }
     semesterModal.show();
+
+    broadcast("ha abierto el formulario de semestre");
 }
 
 
@@ -526,6 +567,8 @@ async function openSubjectForm(status, id = null) {
         subjFormFields.like.checked = false;
     }
     subjectModal.show();
+
+    broadcast("ha abierto el formulario de asignatura");
 }
 
 
@@ -589,6 +632,7 @@ const zones = [pendientesZone, empezadasColumn, aprobadasColumn,
  * - Actualiza la lista de semestres.
 */
 async function init() {
+    initializeSocket();
     applyListeners();
     refreshSemesters();
 }
