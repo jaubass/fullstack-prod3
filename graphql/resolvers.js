@@ -1,11 +1,11 @@
 import SemestersController from "../controllers/SemestersController.js";
 import SubjectsController from "../controllers/SubjectsController.js";
-import { DateTimeResolver } from "graphql-scalars";
+import { DateResolver } from "graphql-scalars";
 
 // Resolvers define how to fetch the types defined in your schema.
 const resolvers = {
 
-  DateTime: DateTimeResolver,
+  Date: DateResolver,
 
   Query: {
     semesters: async () => {

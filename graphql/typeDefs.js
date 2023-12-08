@@ -1,7 +1,7 @@
 //schema
 const typeDefs = `#graphql
 
-  scalar DateTime
+  scalar Date
 
   type Subject {
     id: ID!
@@ -18,8 +18,8 @@ const typeDefs = `#graphql
     id: ID!
     name: String!
     year: Int!
-    start: DateTime!
-    end: DateTime!
+    start: Date!
+    end: Date!
     descrip: String
     color: String!
     kind: Int!
@@ -36,9 +36,9 @@ const typeDefs = `#graphql
 
   type Mutation {
     createSemester(
-        name: String!, year: Int!, start: DateTime!, end: DateTime!, descrip: String, color: String!, kind: Int!, tutorized: Boolean): Semester
+        name: String!, year: Int!, start: Date!, end: Date!, descrip: String, color: String!, kind: Int!, tutorized: Boolean): Semester
     updateSemester(
-        id: ID!, name: String, year: Int, start: DateTime, end: DateTime, descrip: String, color: String, kind: Int, tutorized: Boolean): Semester
+        id: ID!, name: String, year: Int, start: Date, end: Date, descrip: String, color: String, kind: Int, tutorized: Boolean): Semester
     deleteSemester(
         id: ID!): Semester
 
