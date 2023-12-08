@@ -69,6 +69,7 @@ async function getSemesterByIdDB(id) {
     return {};
 }
 
+
 async function getSubjectsBySemesterIdDB(semId) {
     const body = {
         query: `{
@@ -87,6 +88,7 @@ async function getSubjectsBySemesterIdDB(semId) {
     }
     return [];
 }
+
 
 async function getSubjectByIdDB(id) {
     const body = {
@@ -110,4 +112,7 @@ async function getSubjectByIdDB(id) {
 
 
 ////////////////////////////////////////////////////////////////////////////////
-// Mutations (coming soon in Producto 3)
+// Mutations
+async function createSemesterDB(sem) {
+    const body = {};
+}
