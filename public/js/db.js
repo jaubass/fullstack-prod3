@@ -102,6 +102,7 @@ async function getSubjectByIdDB(id) {
                 difficulty
                 grade
                 like
+                filePath
             }
         }`
     };
@@ -181,7 +182,8 @@ async function createSubjectDB(subj) {
                 status: ${subj.status},
                 difficulty: ${subj.difficulty},
                 grade: ${subj.grade},
-                like: ${subj.like}
+                like: ${subj.like},
+                filePath: "${subj.filePath}"
             ) {
                 id
             }
@@ -202,7 +204,8 @@ async function updateSubjectDB(subj) {
                 status: ${subj.status},
                 difficulty: ${subj.difficulty},
                 grade: ${subj.grade},
-                like: ${subj.like}
+                like: ${subj.like},
+                filePath: "${subj.filePath}"
             ) {
                 id
             }

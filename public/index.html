@@ -202,7 +202,8 @@
           <h4 id="subjModalTitle" class="modal-title">Nueva asignatura</h4>
           <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
         </div>
-        <form class="was-validated" id="subjectForm" onsubmit="return handleSubjectForm(event, this)">
+        <form class="was-validated" id="subjectForm" encType="multipart/form-data"
+            onsubmit="return handleSubjectForm(event, this)">
           <input type="hidden" name="subjId" id="subjId">
           <input type="hidden" name="subjSemId" id="subjSemId">
           <input type="hidden" name="subjStatus" id="subjStatus">
@@ -236,6 +237,13 @@
                   <label for="subjectLike">Me gusta</label>
                 </div>
               </div>
+            </div>
+            <div class="input-group mb-3">
+              <a id="subjectFileOld" href="" target="_blank" class="btn btn-primary">Descargar archivo adjunto</a>
+            </div>
+            <div class="input-group mb-3">
+              <label for="subjectFile">Adjuntar archivo</label>
+              <input id="subjectFile" name="subjectFile" type="file" class="w-100">
             </div>
           </div>
           <div class="modal-footer">

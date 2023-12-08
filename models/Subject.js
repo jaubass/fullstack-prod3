@@ -24,6 +24,7 @@ const subjectSchema = new mongoose.Schema({
     difficulty: Number,
     grade: Number,
     like: Boolean,
+    filePath: String,
 },
     { timestamps: true, }
 );

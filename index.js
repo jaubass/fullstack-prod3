@@ -14,10 +14,15 @@ import {
 // Socket.io imports
 import { Server } from 'socket.io';
 
+// Upload imports
+import fileUpload from 'express-fileupload';
+
 // Application imports
 import { dbConnection } from './config/config.js';
 import typeDefs from './graphql/typeDefs.js';
 import resolvers from './graphql/resolvers.js';
+import socketHandler from './middleware/socket.js';
+import uploadHandler from './middleware/upload.js';
 
 // Constants
 const PORT = process.env.PORT || 4000;
@@ -35,27 +40,17 @@ const apolloServer = new ApolloServer({
 });
 await apolloServer.start();
 
-// Routes
+// Middlewares
 app.use(express.static('public'));  // Serves the static files
 dbConnection();
 app.use('/db', cors(), express.json(), expressMiddleware(apolloServer)); // DB endpoint
+app.use('/upload', fileUpload({ debug: true, uriDecodeFileNames: true }));
 
 // Socket.io
-ioServer.on('connection', socket => {
-  // Al conectarse, hacer console.log y enviar mensaje a todos los clientes
-  console.log('New client connected:', socket.id);
-  ioServer.emit("dimelotodo", {
-    status: "ok",
-    text:"Nuevo usuario conectado: " + socket.id
-  });
+ioServer.on('connection', socketHandler);
 
-  // Queda a la espera de recibir mensajes para reenviarlos a todos los clientes
-  socket.on('dimelotodo', (msg)=> {
-    socket.broadcast.emit('dimelotodo', msg);});
-
-  // Al desconectarse, hacer console.log
-  socket.on('disconnect', () => console.log('Client disconnected'));
-});
+// Upload endpoint
+app.post('/upload', uploadHandler);
 
 // Server startup
 await new Promise(resolve => httpServer.listen({ port: PORT }, resolve));

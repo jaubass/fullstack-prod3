@@ -12,6 +12,7 @@ const typeDefs = `#graphql
     difficulty: Int
     grade: Int
     like: Boolean
+    filePath: String
   }
 
   type Semester {
@@ -43,9 +44,9 @@ const typeDefs = `#graphql
         id: ID!): Semester
 
     createSubject(
-        semId: ID!, name: String!, descrip: String, status: Int!, difficulty: Int, grade: Int, like: Boolean): Subject
+        semId: ID!, name: String!, descrip: String, status: Int!, difficulty: Int, grade: Int, like: Boolean, filePath: String): Subject
     updateSubject(
-        id: ID!, name: String, descrip: String, status: Int, difficulty: Int, grade: Int, like: Boolean): Subject
+        id: ID!, name: String, descrip: String, status: Int, difficulty: Int, grade: Int, like: Boolean, filePath: String): Subject
     updateSubjectStatus(
         id: ID!, status: Int!): Subject
     deleteSubject(

@@ -47,7 +47,7 @@ function messageFlash(msg, kind = "success") {
 }
 function broadcast(msg) {
     socket.emit('dimelotodo', {
-        status: "ok", text:`<strong>${socket.id}</strong>:<br>${msg}`
+        status: "ok", text: `<strong>${socket.id}</strong>:<br>${msg}`
     });
 }
 
@@ -255,10 +255,16 @@ async function handleSemForm(ev, form) {
 async function handleSubjectForm(ev, form) {
     ev.preventDefault();
 
+    // Ruta del archivo adjunto, si lo había (si no, será una string vacía)
+    let filePath = subjectFileOld.href;
+    // Si hay un archivo que subir, subirlo
+    if (form.subjectFile.value) {
+        filePath = await handleFileUpload(form);
+    }
+
     // Si en el formulario hay una id (en el campo escondido subjId), es
     // porque se está editando una asignatura. En ese caso, hay que actualizar
     // la asignatura en la BD en vez de crear una nueva.
-
     const subj = {
         id: String(form.subjId.value),
         semId: String(form.subjSemId.value),
@@ -268,6 +274,7 @@ async function handleSubjectForm(ev, form) {
         grade: Number(form.subjectGrade.value),
         like: form.subjectLike.checked,
         status: Number(form.subjStatus.value),
+        filePath,
     };
 
     subjectModal.hide();
@@ -288,6 +295,18 @@ async function handleSubjectForm(ev, form) {
     const sem = await getSemesterByIdDB(subj.semId);
     refreshSubjects(sem);
     return false;
+}
+
+async function handleFileUpload(form) {
+
+    const formData = new FormData(form);
+    const response = await fetch('/upload', {
+        method: 'POST',
+        body: formData
+    });
+    const data = await response.json();
+    console.log(data);
+    return data.path;
 }
 
 // Funciones que gestionan el drag & drop
@@ -540,6 +559,8 @@ async function refreshSubjects(sem) {
 async function openSubjectForm(status, id = null) {
     // Set hidden values in form
     subjFormFields.semId.value = semesterPage.dataset.id;
+    subjectFileOld.href = '';
+    hideMe(subjectFileOld);
 
     if (id) {
         id = String(id);
@@ -554,6 +575,12 @@ async function openSubjectForm(status, id = null) {
         subjFormFields.difficulty.value = subj.difficulty;
         subjFormFields.grade.value = subj.grade;
         subjFormFields.like.checked = subj.like;
+
+        // Si existe una ruta de archivo, mostrar el enlace
+        if (subj.filePath) {
+            subjectFileOld.href = subj.filePath;
+            showMe(subjectFileOld);
+        }
 
     } else {
         // Si no existe un id, estamos creando una asignatura nueva
@@ -588,6 +615,7 @@ const semModalTitle = document.getElementById('semModalTitle');
 const subjectModal = new bootstrap.Modal('#subjectModal');
 const subjModalTitle = document.getElementById('subjModalTitle');
 const subjectForm = document.getElementById('subjectForm');
+const subjectFileOld = document.getElementById('subjectFileOld');
 const confirmDelete = new bootstrap.Modal('#confirmDelete');
 const pendientesZone = document.getElementById('pendientes-zone');
 const pendientesList = document.getElementById('pendientesList');
