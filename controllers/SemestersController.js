@@ -1,4 +1,5 @@
 import Semester from "../models/Semester.js";
+import Subject from "../models/Subject.js";
 
 const SemestersController = {
     getSemestersList: async () => {
@@ -15,6 +16,8 @@ const SemestersController = {
         return await Semester.findByIdAndUpdate(id, updatedSemester, {new: true});
     },
     deleteSemester: async id => {
+        // Delete all subjects of the semester before deleting the semester
+        await Subject.deleteMany({semId: id});
         return await Semester.findByIdAndDelete(id);
     },
 };

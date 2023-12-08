@@ -197,7 +197,6 @@ async function updateSubjectDB(subj) {
         query: `mutation {
             updateSubject(
                 id: "${subj.id}",
-                semId: "${subj.semId}",
                 name: "${subj.name}",
                 descrip: "${subj.descrip}",
                 status: ${subj.status},
