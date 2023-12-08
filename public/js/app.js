@@ -2,7 +2,8 @@
 ////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////
 // Constants
-// Constantes para evitar números mágicos y para que sean más fáciles de entender los códigos de estado de las asignaturas
+// Constantes para evitar números mágicos y para que sean más fáciles de
+//entender los códigos de estado de las asignaturas
 const PENDIENTE = 0;
 const EMPEZADA = 1;
 const APROBADA = 2;
@@ -11,7 +12,7 @@ const SUSPENDIDA = 3;
 ////////////////////////////////////////////////////////////////////////////////
 // Variables
 // Variables globales que serán necesarias en la app
-// const fakeDB = {};
+// Ninguna, por ahora
 
 
 
@@ -44,251 +45,6 @@ function messageFlash(msg, kind = "success") {
 ////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////
-// DATA SELECTOR
-// Funciones que obtienen los datos, o bien de la BD, o bien de la constante
-// `data`, que es donde se guardan los datos que se obtienen de la BD.
-// De esta manera, la BD solo se consula una vez para cada dato
-
-/**
- * Obtiene los semestres, o bien de la BD, o bien de la constante `data`.
- * Solo incluye los datos mínimos de los semestres para generar las cards.
- * No incluye todos los datos de los semestres.
- */
-// async function getSemesters_DBorFake() {
-//     if (!data.semesters) {
-//         // Si todavía no existen los semestres en la constante `data`, se
-//         // obtienen de la BD.
-//         data.semesters = await getSemestersDB();
-//     }
-//     return data.semesters;
-// }
-
-// async function getSemesterById_DBorFake(id) {
-//     // Nos aseguramos que la constante `data` tiene el array `semesters`
-//     // Si no lo tiene, se crea vacío.
-//     fakeDB.semesters = fakeDB.semesters || [];
-
-//     // Intentamos encontrar el semestre en la constante `data`
-//     // Y asegurarnos que tiene todos los datos que necesitamos.
-//     let semester = fakeDB.semesters.find(sem => sem.id === id);
-
-//     // Si el semestre no existe en la constante `data`, o bien le faltan algunos
-//     // datos, se obtiene de la BD.
-//     if (!semester) {
-//         semester = await getSemesterByIdDB(id);
-//         fakeDB.semesters.push(semester);
-
-//     } else if (!semester.year) {
-//         semester = await getSemesterByIdDB(id);
-//         // Si el semestre no tiene el año, es que le faltan datos, así que se
-//         // actualiza con los datos de la BD.
-//         const index = fakeDB.semesters.findIndex(sem => sem.id === id);
-//         fakeDB.semesters[index] = semester;
-//     }
-
-//     return semester;
-// }
-
-// async function getSubjectsBySemesterId_DBorFake(semId) {
-//     // Obtenemos el semestre, que estará en `data` o en la BD
-//     // No nos preocupa, porque la función `getSemesterById_DBorFake` se encarga
-//     // de saberlo.
-//     const semester = await getSemesterById_DBorFake(semId);
-
-//     // Si todavía no se han cargado las asignatura, las sacamos de la BD
-//     if (!semester.subjects) {
-//         semester.subjects = await getSubjectsBySemesterIdDB(semId);
-//         const index = fakeDB.semesters.findIndex(sem => sem.id === semId);
-//         fakeDB.semesters[index] = semester;
-//     }
-
-//     return semester.subjects;
-// }
-
-// async function getSubjectById_DBorFake(id) {
-//     let subject = fakeDB.semesters
-//         .map(sem => sem.subjects)
-//         .flat()
-//         .filter(s => s)  // Filtrar las 'undefined'
-//         .find(subj => subj.id === id);
-
-//     if (subject.difficulty === undefined) {
-//         subject = await getSubjectByIdDB(id);
-//         const semIndex = fakeDB.semesters
-//             .findIndex(sem => sem.id === subject.semId);
-//         const index = fakeDB.semesters
-//             .map(sem => sem.subjects)
-//             .flat()
-//             .filter(s => s)  // Filtrar las 'undefined'
-//             .findIndex(subj => subj.id === id);
-
-//         fakeDB.semesters[semIndex].subjects[index] = subject;
-//     }
-
-//     return subject;
-// }
-
-
-////////////////////////////////////////////////////////////////////////////////
-////////////////////////////////////////////////////////////////////////////////
-////////////////////////////////////////////////////////////////////////////////
-// DATA FAKE DATABASE
-// Funciones que simulan acceder a una base de datos para leer,escribir, editar
-// y borrar datos (CRUD).
-// Cuando estas funciones accedan a una BD real, el resto del programa no
-// necesitará ningún cambio.
-
-// /**
-//  * Crea un nuevo semestre o asignatura en la base de datos.
-//  * @param {Object} info - Objeto con la información del semestre o asignatura
-//  */
-// async function createData(info) {
-//     // Create semester
-//     if (info.sem) {
-//         console.log('Creating semester', info.sem);
-
-//         // REAL DB:
-//         await createSemesterDB(info.sem);
-
-//         // // Assign new id to semester, using reduce
-//         // // Aquí se imita la asignación de un id nuevo a un semestre, como hacen
-//         // // las bases de datos. Se usa reduce para obtener el id más alto de los
-//         // // semestres existentes y se le suma 1.
-//         // const id = data.semesters.reduce((max, sem) => {
-//         //     return sem.id > max ? sem.id : max;
-//         // }, 0) + 1;
-//         // info.sem.id = String(id);
-
-//         // data.semesters.push(info.sem);
-//     }
-
-//     // Create subject
-//     if (info.subj) {
-//         console.log('Creating subject', info.subj);
-
-//         const sem = await getSemesterById_DBorFake(info.subj.semId);
-
-//         // Obtener el id nuevo de la asignatura, usando reduce para obtener el
-//         // id más alto de todas las asignaturas de todos los semestres
-//         const id = fakeDB.semesters
-//             .map(sem => sem.subjects)
-//             .flat()
-//             .filter(s => s)  // Filtrar las 'undefined'
-//             .reduce((max, subj) => {
-//                 return subj.id > max ? subj.id : max;
-//             }, 0) + 1;
-//         info.subj.id = String(id);
-
-//         sem.subjects.push(info.subj);
-//     }
-// }
-
-
-// /**
-//  * Actualiza un semestre
-//  */
-// async function updateSemester(sem) {
-//     // Cast to string
-//     sem.id = String(sem.id);
-//     // Cast to number
-//     sem.year = Number(sem.year);
-
-//     const semOld = await getSemesterById_DBorFake(sem.id);
-
-//     if (semOld) {
-//         semOld.name = sem.name;
-//         semOld.year = sem.year;
-//         semOld.start = sem.start;
-//         semOld.end = sem.end;
-//         semOld.descrip = sem.descrip;
-//         semOld.color = sem.color;
-//         semOld.kind = sem.kind;
-//         semOld.tutorized = sem.tutorized;
-
-//     } else {
-//         throw new Error(`Semester ${sem.id} not found`);
-//     }
-// }
-
-/**
- * Actualiza el estado de una asignatura.
- * @param {String} id - Id de la asignatura
- * @param {Number} status - Nuevo estado de la asignatura
- */
-async function updateSubjectStatus(id, status) {
-
-    id = String(id);
-    status = Number(status);
-
-    await updateSubjectStatusDB(id, status);
-
-    // const subj = await getSubjectById_DBorFake(id);
-    // if (subj) {
-    //     subj.status = status;
-
-    // } else {
-    //     throw new Error(`Subject ${id} not found`);
-    // }
-}
-
-// /**
-//  * Actualiza una asignatura en la (falsa) base de datos.
-//  */
-// async function updateSubject(subj) {
-//     // Cast to correct types
-//     subj.id = String(subj.id);
-//     subj.status = Number(subj.status);
-
-//     console.log('¿aquí?')
-//     const subjOld = await getSubjectById_DBorFake(subj.id);
-
-//     if (subjOld) {
-//         subjOld.name = subj.name;
-//         subjOld.descrip = subj.descrip;
-//         subjOld.difficulty = subj.difficulty;
-//         subjOld.grade = subj.grade;
-//         subjOld.like = subj.like;
-//         subjOld.status = Number(subj.status);
-//         subjOld.semId = String(subj.semId);
-
-//     } else {
-//         throw new Error(`Subject ${subj.id} not found`);
-//     }
-// }
-
-
-// /**
-//  * Borra un semestre o asignatura de la falsa base de datos.
-//  */
-// async function deleteData(info) {
-//     if (info.semId) {
-//         // Delete semester by Id
-//         console.log('Deleting semester', info.semId);
-//         fakeDB.semesters = fakeDB.semesters.filter(sem => sem.id != info.semId);
-//     }
-//     if (info.subjId) {
-//         // Delete subject by Id
-//         console.log('Deleting subject', info.subjId);
-//         fakeDB.semesters
-//             // Filtrar solo los semestres que tienen asignaturas  (para evitar
-//             // errores)
-//             .filter(sem => sem.subjects)
-//             .forEach(sem =>
-//                 sem.subjects = sem.subjects.filter(
-//                     subj => subj.id != info.subjId)
-//             );
-//     }
-// }
-
-
-
-
-
-
-////////////////////////////////////////////////////////////////////////////////
-////////////////////////////////////////////////////////////////////////////////
-////////////////////////////////////////////////////////////////////////////////
-// LOGIC
 /**
  * Muestra el modal de confirmación para borrar un semestre.
  */
@@ -307,7 +63,7 @@ async function deleteSem(id) {
 
 /**
  * Muestra el modal de confirmación para borrar una asignatura.
- * Borra una asignatura. TODO: que sea a la vuelta del modal de confirmación.
+ * Borra una asignatura.
  */
 async function deleteSubject(id) {
 
@@ -332,12 +88,10 @@ async function deleteConfirmed() {
     confirmDelete.hide();
 
     if (what === "semester") {
-        // await deleteData({ semId: id });
         await deleteSemesterDB(id);
         refreshSemesters();
 
     } else if (what === "subject") {
-        // await deleteData({ subjId: id });
         await deleteSubjectDB(id);
         const semId = semesterPage.dataset.id;
         const sem = await getSemesterByIdDB(semId);
@@ -563,7 +317,7 @@ async function dragdrop(ev) {
     const subjectId = card.dataset.id;
     const status = column.dataset.status;
 
-    await updateSubjectStatus(subjectId, status);
+    await updateSubjectStatusDB(String(id), Number(status));
     // La tarjeta se añade a un div que está dentro de la columna, por eso se
     // usa querySelector para seleccionar ese div y luego appendChild para
     // añadir la tarjeta a ese div.
