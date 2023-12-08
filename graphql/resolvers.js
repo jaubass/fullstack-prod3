@@ -43,6 +43,10 @@ const resolvers = {
       return await SubjectsController
         .updateSubject(subjectData.id, subjectData);
     },
+    updateSubjectStatus: async (obj, subjectData) => {
+      return await SubjectsController
+        .updateSubjectStatus(subjectData.id, subjectData.status);
+    },
     deleteSubject: async (obj, { id }) => {
       return await SubjectsController.deleteSubject(id);
     },

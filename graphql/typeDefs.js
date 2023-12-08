@@ -46,6 +46,8 @@ const typeDefs = `#graphql
         semId: ID!, name: String!, descrip: String, status: Int!, difficulty: Int, grade: Int, like: Boolean): Subject
     updateSubject(
         id: ID!, name: String, descrip: String, status: Int, difficulty: Int, grade: Int, like: Boolean): Subject
+    updateSubjectStatus(
+        id: ID!, status: Int!): Subject
     deleteSubject(
         id: ID!): Subject
   }

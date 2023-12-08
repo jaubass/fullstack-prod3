@@ -20,6 +20,9 @@ const SubjectsController = {
     updateSubject: async (id, updatedSubject) => {
         return await Subject.findByIdAndUpdate(id, updatedSubject, {new: true});
     },
+    updateSubjectStatus: async (id, status) => {
+        return await Subject.findByIdAndUpdate(id, {status}, {new: true});
+    },
     deleteSubject: async id => {
         return Subject.findByIdAndDelete(id);
     },

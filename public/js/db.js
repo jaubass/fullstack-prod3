@@ -157,3 +157,88 @@ async function updateSemesterDB(sem) {
     if (data) { return data.updateSemester; }
     return {};
 }
+
+async function deleteSemesterDB(id) {
+    const body = {
+        query: `mutation {
+            deleteSemester(id: "${id}") {
+                id
+            }
+        }`
+    };
+    const data = await connectDB(body);
+    if (data) { return data.deleteSemester; }
+    return null;
+}
+
+async function createSubjectDB(subj) {
+    const body = {
+        query: `mutation {
+            createSubject(
+                semId: "${subj.semId}",
+                name: "${subj.name}",
+                descrip: "${subj.descrip}",
+                status: ${subj.status},
+                difficulty: ${subj.difficulty},
+                grade: ${subj.grade},
+                like: ${subj.like}
+            ) {
+                id
+            }
+        }`
+    };
+    const data = await connectDB(body);
+    if (data) { return data.createSubject; }
+    return null;
+}
+
+async function updateSubjectDB(subj) {
+    const body = {
+        query: `mutation {
+            updateSubject(
+                id: "${subj.id}",
+                semId: "${subj.semId}",
+                name: "${subj.name}",
+                descrip: "${subj.descrip}",
+                status: ${subj.status},
+                difficulty: ${subj.difficulty},
+                grade: ${subj.grade},
+                like: ${subj.like}
+            ) {
+                id
+            }
+        }`
+    };
+    const data = await connectDB(body);
+    if (data) { return data.updateSubject; }
+    return {};
+}
+
+async function updateSubjectStatusDB(id, status) {
+    const body = {
+        query: `mutation {
+            updateSubjectStatus(
+                id: "${id}",
+                status: ${status}
+            ) {
+                id
+            }
+        }`
+    };
+    const data = await connectDB(body);
+    if (data) { return data.updateSubjectStatus; }
+    return {};
+}
+
+async function deleteSubjectDB(id) {
+    const body = {
+        query: `mutation {
+            deleteSubject(id: "${id}") {
+                id
+            }
+        }`
+    };
+    const data = await connectDB(body);
+    if (data) { return data.deleteSubject; }
+    return null;
+}
