@@ -105,7 +105,7 @@ async function deleteConfirmed() {
         await deleteSemesterDB(id);
         refreshSemesters();
 
-        broadcast("ha borrado un semestre 😱!");
+        broadcast(`ha borrado un semestre 😱!<br>(id: ${id})`);
 
     } else if (what === "subject") {
         await deleteSubjectDB(id);
@@ -113,7 +113,7 @@ async function deleteConfirmed() {
         const sem = await getSemesterByIdDB(semId);
         refreshSubjects(sem);
 
-        broadcast("ha borrado una asignatura 😱!");
+        broadcast(`ha borrado una asignatura 😱!<br>(id: ${id})`);
     }
 }
 
@@ -349,7 +349,7 @@ async function dragdrop(ev) {
     // añadir la tarjeta a ese div.
     column.querySelector("div").appendChild(card);
 
-    broadcast("ha movido una asignatura de columna");
+    broadcast(`ha movido una asignatura de columna (id: ${id}, status: ${status})`);
 }
 
 /**
