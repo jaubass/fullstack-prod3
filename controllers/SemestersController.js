@@ -10,7 +10,10 @@ const SemestersController = {
     },
     createSemester: async newSemester => {
         return await Semester.create(newSemester);
-    }
+    },
+    updateSemester: async (id, updatedSemester) => {
+        return await Semester.findByIdAndUpdate(id, updatedSemester, {new: true});
+    },
 };
 
 

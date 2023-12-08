@@ -26,6 +26,10 @@ const resolvers = {
       semData.subjects = [];
       return await SemestersController.createSemester(semData);
     },
+    updateSemester: async (obj, semData) => {
+      return await SemestersController
+        .updateSemester(semData.id, semData);
+    },
   },
 };
 

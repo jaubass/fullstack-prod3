@@ -133,3 +133,26 @@ async function createSemesterDB(sem) {
     if (data) { return data.semesters; }
     return [];
 }
+
+async function updateSemesterDB(sem) {
+    const body = {
+        query: `mutation {
+            updateSemester(
+                id: "${sem.id}",
+                name: "${sem.name}",
+                year: ${sem.year},
+                start: "${sem.start}",
+                end: "${sem.end}",
+                descrip: "${sem.descrip}",
+                color: "${sem.color}",
+                kind: ${sem.kind},
+                tutorized: ${sem.tutorized}
+            ) {
+                id
+            }
+        }`
+    };
+    const data = await connectDB(body);
+    if (data) { return data.updateSemester; }
+    return {};
+}

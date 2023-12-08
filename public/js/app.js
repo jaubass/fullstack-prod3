@@ -147,6 +147,9 @@ async function createData(info) {
     if (info.sem) {
         console.log('Creating semester', info.sem);
         await createSemesterDB(info.sem);
+
+        refreshSemesters();
+        return false;
     }
 
     // Create subject
@@ -192,9 +195,16 @@ async function updateSemester(sem) {
         semOld.kind = sem.kind;
         semOld.tutorized = sem.tutorized;
 
+        await updateSemesterDB(sem);
+
+        console.log("ha editado un semestre");
+
     } else {
         throw new Error(`Semester ${sem.id} not found`);
     }
+
+    refreshSemesters();
+    return false;
 }
 
 /**

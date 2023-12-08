@@ -37,6 +37,8 @@ const typeDefs = `#graphql
   type Mutation {
     createSemester(
       name: String!, year: Int!, start: Date!, end: Date!, descrip: String, color: String!, kind: Int!, tutorized: Boolean): Semester
+    updateSemester(
+      id: ID!, name: String, year: Int, start: Date!, end: Date!, descrip: String, color: String, kind: Int, tutorized: Boolean): Semester
   }
 `;
 
