@@ -21,6 +21,12 @@ const resolvers = {
       return await SubjectsController.getSubjectById(id);
     },
   },
+  Mutation:  {
+    createSemester: async (obj, semData) => {
+      semData.subjects = [];
+      return await SemestersController.createSemester(semData);
+    },
+  },
 };
 
 export default resolvers;

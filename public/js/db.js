@@ -111,3 +111,25 @@ async function getSubjectByIdDB(id) {
 
 ////////////////////////////////////////////////////////////////////////////////
 // Mutations (coming soon in Producto 3)
+
+async function createSemesterDB(sem) {
+    const body = {
+        query: `mutation {
+            createSemester(
+                name: "${sem.name}",
+                year: ${sem.year},
+                start: "${sem.start}",
+                end: "${sem.end}",
+                descrip: "${sem.descrip}",
+                color: "${sem.color}",
+                kind: ${sem.type},
+                tutorized: ${sem.tutorized}
+            ) {
+                id
+            }
+        }`
+    }
+    const data = await connectDB(body)
+    if (data) { return data.semesters; }
+    return [];
+}

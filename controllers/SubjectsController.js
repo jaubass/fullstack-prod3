@@ -1,4 +1,5 @@
 import Subject from "../models/Subject.js";
+import Semester from "../models/Semester.js";
 
 const SubjectsController = {
     getSubjectById: async id => {

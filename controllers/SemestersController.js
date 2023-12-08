@@ -8,6 +8,9 @@ const SemestersController = {
         return await Semester.findById(id)
             .populate("subjects");
     },
+    createSemester: async newSemester => {
+        return await Semester.create(newSemester);
+    }
 };
 
 

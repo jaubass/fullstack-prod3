@@ -146,16 +146,7 @@ async function createData(info) {
     // Create semester
     if (info.sem) {
         console.log('Creating semester', info.sem);
-        // Assign new id to semester, using reduce
-        // Aquí se imita la asignación de un id nuevo a un semestre, como hacen
-        // las bases de datos. Se usa reduce para obtener el id más alto de los
-        // semestres existentes y se le suma 1.
-        const id = data.semesters.reduce((max, sem) => {
-            return sem.id > max ? sem.id : max;
-        }, 0) + 1;
-        info.sem.id = String(id);
-
-        data.semesters.push(info.sem);
+        await createSemesterDB(info.sem);
     }
 
     // Create subject
