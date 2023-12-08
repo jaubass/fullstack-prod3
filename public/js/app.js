@@ -11,7 +11,7 @@ const SUSPENDIDA = 3;
 ////////////////////////////////////////////////////////////////////////////////
 // Variables
 // Variables globales que serán necesarias en la app
-const data = {};
+const fakeDB = {};
 
 
 
@@ -54,36 +54,36 @@ function messageFlash(msg, kind = "success") {
  * Solo incluye los datos mínimos de los semestres para generar las cards.
  * No incluye todos los datos de los semestres.
  */
-async function getSemesters_DBorFake() {
-    if (!data.semesters) {
-        // Si todavía no existen los semestres en la constante `data`, se
-        // obtienen de la BD.
-        data.semesters = await getSemestersDB();
-    }
-    return data.semesters;
-}
+// async function getSemesters_DBorFake() {
+//     if (!data.semesters) {
+//         // Si todavía no existen los semestres en la constante `data`, se
+//         // obtienen de la BD.
+//         data.semesters = await getSemestersDB();
+//     }
+//     return data.semesters;
+// }
 
 async function getSemesterById_DBorFake(id) {
     // Nos aseguramos que la constante `data` tiene el array `semesters`
     // Si no lo tiene, se crea vacío.
-    data.semesters = data.semesters || [];
+    fakeDB.semesters = fakeDB.semesters || [];
 
     // Intentamos encontrar el semestre en la constante `data`
     // Y asegurarnos que tiene todos los datos que necesitamos.
-    let semester = data.semesters.find(sem => sem.id === id);
+    let semester = fakeDB.semesters.find(sem => sem.id === id);
 
     // Si el semestre no existe en la constante `data`, o bien le faltan algunos
     // datos, se obtiene de la BD.
     if (!semester) {
         semester = await getSemesterByIdDB(id);
-        data.semesters.push(semester);
+        fakeDB.semesters.push(semester);
 
     } else if (!semester.year) {
         semester = await getSemesterByIdDB(id);
         // Si el semestre no tiene el año, es que le faltan datos, así que se
         // actualiza con los datos de la BD.
-        const index = data.semesters.findIndex(sem => sem.id === id);
-        data.semesters[index] = semester;
+        const index = fakeDB.semesters.findIndex(sem => sem.id === id);
+        fakeDB.semesters[index] = semester;
     }
 
     return semester;
@@ -98,15 +98,15 @@ async function getSubjectsBySemesterId_DBorFake(semId) {
     // Si todavía no se han cargado las asignatura, las sacamos de la BD
     if (!semester.subjects) {
         semester.subjects = await getSubjectsBySemesterIdDB(semId);
-        const index = data.semesters.findIndex(sem => sem.id === semId);
-        data.semesters[index] = semester;
+        const index = fakeDB.semesters.findIndex(sem => sem.id === semId);
+        fakeDB.semesters[index] = semester;
     }
 
     return semester.subjects;
 }
 
 async function getSubjectById_DBorFake(id) {
-    let subject = data.semesters
+    let subject = fakeDB.semesters
         .map(sem => sem.subjects)
         .flat()
         .filter(s => s)  // Filtrar las 'undefined'
@@ -114,15 +114,15 @@ async function getSubjectById_DBorFake(id) {
 
     if (subject.difficulty === undefined) {
         subject = await getSubjectByIdDB(id);
-        const semIndex = data.semesters
+        const semIndex = fakeDB.semesters
             .findIndex(sem => sem.id === subject.semId);
-        const index = data.semesters
+        const index = fakeDB.semesters
             .map(sem => sem.subjects)
             .flat()
             .filter(s => s)  // Filtrar las 'undefined'
             .findIndex(subj => subj.id === id);
 
-        data.semesters[semIndex].subjects[index] = subject;
+        fakeDB.semesters[semIndex].subjects[index] = subject;
     }
 
     return subject;
@@ -146,16 +146,20 @@ async function createData(info) {
     // Create semester
     if (info.sem) {
         console.log('Creating semester', info.sem);
-        // Assign new id to semester, using reduce
-        // Aquí se imita la asignación de un id nuevo a un semestre, como hacen
-        // las bases de datos. Se usa reduce para obtener el id más alto de los
-        // semestres existentes y se le suma 1.
-        const id = data.semesters.reduce((max, sem) => {
-            return sem.id > max ? sem.id : max;
-        }, 0) + 1;
-        info.sem.id = String(id);
 
-        data.semesters.push(info.sem);
+        // REAL DB:
+        await createSemesterDB(info.sem);
+
+        // // Assign new id to semester, using reduce
+        // // Aquí se imita la asignación de un id nuevo a un semestre, como hacen
+        // // las bases de datos. Se usa reduce para obtener el id más alto de los
+        // // semestres existentes y se le suma 1.
+        // const id = data.semesters.reduce((max, sem) => {
+        //     return sem.id > max ? sem.id : max;
+        // }, 0) + 1;
+        // info.sem.id = String(id);
+
+        // data.semesters.push(info.sem);
     }
 
     // Create subject
@@ -166,7 +170,7 @@ async function createData(info) {
 
         // Obtener el id nuevo de la asignatura, usando reduce para obtener el
         // id más alto de todas las asignaturas de todos los semestres
-        const id = data.semesters
+        const id = fakeDB.semesters
             .map(sem => sem.subjects)
             .flat()
             .filter(s => s)  // Filtrar las 'undefined'
@@ -180,31 +184,31 @@ async function createData(info) {
 }
 
 
-/**
- * Actualiza un semestre
- */
-async function updateSemester(sem) {
-    // Cast to string
-    sem.id = String(sem.id);
-    // Cast to number
-    sem.year = Number(sem.year);
+// /**
+//  * Actualiza un semestre
+//  */
+// async function updateSemester(sem) {
+//     // Cast to string
+//     sem.id = String(sem.id);
+//     // Cast to number
+//     sem.year = Number(sem.year);
 
-    const semOld = await getSemesterById_DBorFake(sem.id);
+//     const semOld = await getSemesterById_DBorFake(sem.id);
 
-    if (semOld) {
-        semOld.name = sem.name;
-        semOld.year = sem.year;
-        semOld.start = sem.start;
-        semOld.end = sem.end;
-        semOld.descrip = sem.descrip;
-        semOld.color = sem.color;
-        semOld.kind = sem.kind;
-        semOld.tutorized = sem.tutorized;
+//     if (semOld) {
+//         semOld.name = sem.name;
+//         semOld.year = sem.year;
+//         semOld.start = sem.start;
+//         semOld.end = sem.end;
+//         semOld.descrip = sem.descrip;
+//         semOld.color = sem.color;
+//         semOld.kind = sem.kind;
+//         semOld.tutorized = sem.tutorized;
 
-    } else {
-        throw new Error(`Semester ${sem.id} not found`);
-    }
-}
+//     } else {
+//         throw new Error(`Semester ${sem.id} not found`);
+//     }
+// }
 
 /**
  * Actualiza el estado de una asignatura.
@@ -259,12 +263,12 @@ async function deleteData(info) {
     if (info.semId) {
         // Delete semester by Id
         console.log('Deleting semester', info.semId);
-        data.semesters = data.semesters.filter(sem => sem.id != info.semId);
+        fakeDB.semesters = fakeDB.semesters.filter(sem => sem.id != info.semId);
     }
     if (info.subjId) {
         // Delete subject by Id
         console.log('Deleting subject', info.subjId);
-        data.semesters
+        fakeDB.semesters
             // Filtrar solo los semestres que tienen asignaturas  (para evitar
             // errores)
             .filter(sem => sem.subjects)
@@ -446,9 +450,11 @@ async function handleSemForm(ev, form) {
     form.reset();
 
     if (sem.id) {
-        await updateSemester(sem);
+        await updateSemesterDB(sem);
+
     } else {
-        await createData({ sem });
+        console.log('Creating semester', sem);
+        await createSemesterDB(sem);
     }
 
     refreshSemesters();
@@ -623,7 +629,7 @@ function goSemsList() {
  */
 async function refreshSemesters() {
 
-    const semesters = await getSemesters_DBorFake();
+    const semesters = await getSemestersDB();
 
     semestersList.innerHTML = '';
     semesters.forEach(sem => {

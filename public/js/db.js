@@ -18,7 +18,7 @@ async function connectDB(body) {
             body: JSON.stringify(body)
         });
         const responseJson = await responseRaw.json();
-        console.log("From DB", responseJson.data);
+        console.log("From DB", responseJson);
         messageFlash("Conectado con la base de datos", "success");
         return responseJson.data;
 
@@ -114,5 +114,46 @@ async function getSubjectByIdDB(id) {
 ////////////////////////////////////////////////////////////////////////////////
 // Mutations
 async function createSemesterDB(sem) {
-    const body = {};
+    const body = {
+        query: `mutation {
+            createSemester(
+                name: "${sem.name}",
+                year: ${sem.year},
+                start: "${sem.start}",
+                end: "${sem.end}",
+                descrip: "${sem.descrip}",
+                color: "${sem.color}",
+                kind: ${sem.kind},
+                tutorized: ${sem.tutorized}
+            ) {
+                id
+            }
+        }`
+    };
+    const data = await connectDB(body);
+    if (data) { return data.createSemester; }
+    return null;
+}
+
+async function updateSemesterDB(sem) {
+    const body = {
+        query: `mutation {
+            updateSemester(
+                id: "${sem.id}",
+                name: "${sem.name}",
+                year: ${sem.year},
+                start: "${sem.start}",
+                end: "${sem.end}",
+                descrip: "${sem.descrip}",
+                color: "${sem.color}",
+                kind: ${sem.kind},
+                tutorized: ${sem.tutorized}
+            ) {
+                id
+            }
+        }`
+    };
+    const data = await connectDB(body);
+    if (data) { return data.updateSemester; }
+    return {};
 }
