@@ -4,7 +4,6 @@
 
 ## Equipo JackX
 * Jaume Fite Planes
-* Angel Doña Cazalla
 * Camelia Moticeac
 * Katiane Coutinho Rosa
 * Xavier Matoses Meseguer
