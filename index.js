@@ -21,8 +21,8 @@ import fileUpload from 'express-fileupload';
 import { dbConnection } from './config/config.js';
 import typeDefs from './graphql/typeDefs.js';
 import resolvers from './graphql/resolvers.js';
-import socketHandler from './middleware/socket.js';
-import uploadHandler from './middleware/upload.js';
+import socketHandler from './handlers/socket.js';
+import uploadHandler from './handlers/upload.js';
 
 // Constants
 const PORT = process.env.PORT || 4000;
