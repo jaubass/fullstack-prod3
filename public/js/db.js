@@ -24,7 +24,7 @@ async function connectDB(body) {
 
     } catch (error) {
         console.error(error);
-        messageFlash("Error de conexión con la base de datos", "danger")
+        messageFlash("Error de conexión con la base de datos", "danger");
         return null;
     }
 }
